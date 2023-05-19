@@ -52,7 +52,22 @@ async function run() {
       res.send(result);
     });
 
-   
+    // shop by category
+    app.get("/category-toys", async (req, res) => {
+      const query = {};
+      const options = {
+        // Include only the `title` and `imdb` fields in the returned document
+        projection: {
+          toy_name: 1,
+          toy_img: 1,
+          sub_category: 1,
+          price: 1,
+          rating: 1,
+        },
+      };
+      const result = await toysCollection.find(query, options).toArray();
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
