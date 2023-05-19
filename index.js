@@ -35,7 +35,24 @@ async function run() {
 
     const toysCollection = client.db("toysDB").collection("toys");
 
-    
+    // all toys routes
+    app.get("/alltoys", async (req, res) => {
+      const query = {};
+      const options = {
+        // Include only the `title` and `imdb` fields in the returned document
+        projection: {
+          toy_name: 1,
+          seller_name: 1,
+          sub_category: 1,
+          price: 1,
+          quantity: 1,
+        },
+      };
+      const result = await toysCollection.find(query, options).toArray();
+      res.send(result);
+    });
+
+   
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
