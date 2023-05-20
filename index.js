@@ -35,6 +35,26 @@ async function run() {
 
     const toysCollection = client.db("toysDB").collection("toys");
 
+    // indexing
+    const indexKeys = { toyName: 1 };
+    const indexOptions = { name: "titleSearch" };
+    const result = await toysCollection.createIndex(indexKeys, indexOptions);
+
+    app.get("/toySearch/:text", async (req, res) => {
+      const searchText = req.params.text;
+      // console.log(searchText);
+      const result = await toysCollection
+        .find({
+          $or: [
+            {
+              toy_name: { $regex: searchText, $options: "i" },
+            },
+          ],
+        })
+        .toArray();
+      res.send(result);
+    });
+
     // all toys routes
     app.get("/alltoys", async (req, res) => {
       const query = {};
@@ -93,6 +113,7 @@ async function run() {
     // Add a toy post
     app.post("/add-toy", async (req, res) => {
       const newToy = req.body;
+      console.log(newToy);
       const result = await toysCollection.insertOne(newToy);
       res.send(result);
     });
