@@ -108,14 +108,14 @@ async function run() {
       if (req.query?.email) {
         query = { seller_email: req.query.email };
       }
-      const result = await toysCollection.find(query).toArray();
+      const result = await toysCollection.find(query).sort({ price: 1 }).toArray();
       res.send(result);
     });
 
     // Add a toy post
     app.post("/add-toy", async (req, res) => {
       const newToy = req.body;
-      console.log(newToy);
+      // console.log(newToy);
       const result = await toysCollection.insertOne(newToy);
       res.send(result);
     });
