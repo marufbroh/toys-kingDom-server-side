@@ -40,6 +40,7 @@ async function run() {
     const indexOptions = { name: "titleSearch" };
     const result = await toysCollection.createIndex(indexKeys, indexOptions);
 
+    // toys search by name
     app.get("/toySearch/:text", async (req, res) => {
       const searchText = req.params.text;
       // console.log(searchText);
@@ -119,10 +120,11 @@ async function run() {
       res.send(result);
     });
 
+    // uptate toy details
     app.put("/my-toys/:id", async (req, res) => {
       const id = req.params.id;
       const toyNewDetails = req.body;
-    //   console.log(existingToy);
+      //   console.log(existingToy);
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
       const updateToy = {
@@ -134,14 +136,18 @@ async function run() {
           quantity: toyNewDetails.quantity,
           rating: toyNewDetails.rating,
           review: toyNewDetails.review,
-          description: toyNewDetails.description
+          description: toyNewDetails.description,
         },
       };
-      const result = await toysCollection.updateOne(
-        filter,
-        updateToy,
-        options
-      );
+      const result = await toysCollection.updateOne(filter, updateToy, options);
+      res.send(result);
+    });
+
+    // delete toy
+    app.delete("/my-toys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await toysCollection.deleteOne(query);
       res.send(result);
     });
 
