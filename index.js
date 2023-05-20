@@ -51,6 +51,7 @@ async function run() {
             },
           ],
         })
+        .limit(20)
         .toArray();
       res.send(result);
     });
@@ -115,6 +116,32 @@ async function run() {
       const newToy = req.body;
       console.log(newToy);
       const result = await toysCollection.insertOne(newToy);
+      res.send(result);
+    });
+
+    app.put("/my-toys/:id", async (req, res) => {
+      const id = req.params.id;
+      const toyNewDetails = req.body;
+    //   console.log(existingToy);
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateToy = {
+        $set: {
+          toy_name: toyNewDetails.toy_name,
+          toy_img: toyNewDetails.toy_img,
+          price: toyNewDetails.price,
+          sub_category: toyNewDetails.sub_category,
+          quantity: toyNewDetails.quantity,
+          rating: toyNewDetails.rating,
+          review: toyNewDetails.review,
+          description: toyNewDetails.description
+        },
+      };
+      const result = await toysCollection.updateOne(
+        filter,
+        updateToy,
+        options
+      );
       res.send(result);
     });
 
