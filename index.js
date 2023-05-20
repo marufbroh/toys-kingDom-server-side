@@ -48,7 +48,10 @@ async function run() {
           quantity: 1,
         },
       };
-      const result = await toysCollection.find(query, options).toArray();
+      const result = await toysCollection
+        .find(query, options)
+        .limit(20)
+        .toArray();
       res.send(result);
     });
 
@@ -84,6 +87,13 @@ async function run() {
         query = { seller_email: req.query.email };
       }
       const result = await toysCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // Add a toy post
+    app.post("/add-toy", async (req, res) => {
+      const newToy = req.body;
+      const result = await toysCollection.insertOne(newToy);
       res.send(result);
     });
 
