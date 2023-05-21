@@ -81,7 +81,6 @@ async function run() {
     app.get("/category-toys", async (req, res) => {
       const query = {};
       const options = {
-        // Include only the `title` and `imdb` fields in the returned document
         projection: {
           toy_name: 1,
           toy_img: 1,
@@ -108,8 +107,13 @@ async function run() {
       if (req.query?.email) {
         query = { seller_email: req.query.email };
       }
-      const result = await toysCollection.find(query).sort({ price: 1 }).toArray();
-      res.send(result);
+      const result = await toysCollection.find(query).toArray();
+      const sortedData = result.sort((a,b) => {
+        const priceA = parseInt(a.price);
+        const priceB = parseInt(b.price);
+        return priceA - priceB
+      })
+      res.send(sortedData);
     });
 
     // Add a toy post
